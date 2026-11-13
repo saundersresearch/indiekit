@@ -31,9 +31,11 @@ export const locals = (Indiekit) =>
       application.shortcuts = getShortcuts(Indiekit, response);
       application.url = Indiekit.applicationUrl || getUrl(request);
 
+      application.basePath = Indiekit.basePath;
+
       if (request.accepts("html")) {
-        application.cssPath = `/assets/app-${cssHash}.css`;
-        application.jsPath = `/assets/app-${jsHash}.js`;
+        application.cssPath = `${Indiekit.basePath}/assets/app-${cssHash}.css`;
+        application.jsPath = `${Indiekit.basePath}/assets/app-${jsHash}.js`;
 
         // Only update if serving HTML to prevent wrong session link being shown
         application.navigation = getNavigation(Indiekit, request, response);

@@ -53,10 +53,10 @@
   </style>
 
   <link rel="stylesheet" href="{{ application.cssPath | url(application.url) }}">
-  <link rel="alternate" href="{{ "feed.jf2" | url(application.url) }}" type="application/jf2feed+json" title="JF2 Feed">
-  <link rel="apple-touch-icon" href="{{ (assetBase ~ "/app-icon-180-any.png") | url(application.url) }}">
-  <link rel="icon" href="{{ (assetBase ~ "/icon.svg") | url(application.url) }}">
-  <link rel="manifest" href="{{ "app.webmanifest" | url(application.url) }}">
+  <link rel="alternate" href="{{ (application.basePath ~ "/feed.jf2") | url(application.url) }}" type="application/jf2feed+json" title="JF2 Feed">
+  <link rel="apple-touch-icon" href="{{ (application.basePath ~ assetBase ~ "/app-icon-180-any.png") | url(application.url) }}">
+  <link rel="icon" href="{{ (application.basePath ~ assetBase ~ "/icon.svg") | url(application.url) }}">
+  <link rel="manifest" href="{{ (application.basePath ~ "/app.webmanifest") | url(application.url) }}">
 
   <meta name="supported-color-schemes" content="light dark">
   <meta name="theme-color" content="{{ themeColor(application.themeColor) }}" media="(prefers-color-scheme: light)">

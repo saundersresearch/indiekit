@@ -5,6 +5,7 @@ import makeDebug from "debug";
 import express from "express";
 import fileUpload from "express-fileupload";
 
+import { basePath } from "../lib/middleware/base-path.js";
 import * as error from "../lib/middleware/error.js";
 import { forceHttps } from "../lib/middleware/force-https.js";
 import { internationalisation } from "../lib/middleware/internationalisation.js";
@@ -54,6 +55,9 @@ export const expressConfig = (Indiekit) => {
   // Internationalisation
   app.use(internationalisation(Indiekit));
 
+  // Keep links and redirects under any sub-path
+  app.use(basePath(Indiekit.basePath));
+
   // Locals
   app.use(locals(Indiekit));
 
@@ -67,7 +71,7 @@ export const expressConfig = (Indiekit) => {
   app.set("view engine", "njk");
 
   // Routes
-  app.use(routes(Indiekit));
+  app.use(Indiekit.basePath || "/", routes(Indiekit));
 
   // Handle errors
   debug(`Add error handling middlewares`);

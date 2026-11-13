@@ -22,7 +22,10 @@ export const getEndpointUrls = (application, request) => {
   ]) {
     endpoints[endpoint] = URL.canParse(application[endpoint])
       ? application[endpoint]
-      : new URL(application[endpoint], getUrl(request)).href;
+      : new URL(
+          (application.basePath || "") + application[endpoint],
+          getUrl(request),
+        ).href;
   }
 
   return endpoints;

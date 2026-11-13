@@ -32,3 +32,11 @@ export const isSameOrigin = (string, origin) => {
   const originUrl = new URL(origin);
   return url.origin === originUrl.origin;
 };
+
+/**
+ * Get base path from URL
+ * @param {string} string - URL, i.e. https://example.com:8080/indiekit
+ * @returns {string} Base path, i.e. /indiekit
+ */
+export const getBasePath = (string) =>
+  string ? new URL(string).pathname.replace(/\/+$/, "") : "";

@@ -50,7 +50,9 @@ export const getNavigation = (Indiekit, request, response) => {
   for (const item of navigation) {
     item.text = response.locals.__(item.text);
     item.attributes = {
-      "aria-current": String(request.path.startsWith(item.href)),
+      "aria-current": String(
+        request.path.replace(Indiekit.basePath, "").startsWith(item.href),
+      ),
     };
   }
 

@@ -35,6 +35,7 @@ export const routes = (Indiekit) => {
   const indieauth = new IndieAuth({
     devMode: process.env.NODE_ENV === "development",
     me: publication.me,
+    basePath: Indiekit.basePath,
   });
 
   // Prevent pages from being indexed

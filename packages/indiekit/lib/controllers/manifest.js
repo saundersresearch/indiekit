@@ -8,13 +8,14 @@ import { getBackgroundColor, getThemeColor } from "@indiekit/frontend";
  */
 export const get = async (request, response) => {
   const { application } = request.app.locals;
+  const basePath = application.basePath || "";
 
   response.set("Cache-Control", "public, max-age=604800"); // 7 days
   return response.type("application/manifest+json").json({
     $schema: "https://json.schemastore.org/web-manifest-combined.json",
     lang: application.locale,
     name: application.name,
-    scope: "/",
+    scope: `${basePath}/`,
     icons: [
       {
         src: "assets/app-icon-192-any.png",
@@ -36,11 +37,18 @@ export const get = async (request, response) => {
       },
     ],
     display: "standalone",
-    start_url: "/?homescreen",
-    id: "/?homescreen",
+    start_url: `${basePath}/?homescreen`,
+    id: `${basePath}/?homescreen`,
     theme_color: getThemeColor(application.themeColor),
     background_color: getBackgroundColor(application.themeColor),
-    shortcuts: application.shortcuts,
+    shortcuts: application.shortcuts?.map((shortcut) => ({
+      ...shortcut,
+      url: basePath + shortcut.url,
+      icons: shortcut.icons?.map((icon) => ({
+        ...icon,
+        src: basePath + icon.src,
+      })),
+    })),
     ...(application.shareEndpoint && {
       share_target: {
         action: application.shareEndpoint,

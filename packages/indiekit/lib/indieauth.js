@@ -2,7 +2,7 @@ import { createHash, randomBytes } from "node:crypto";
 import process from "node:process";
 
 import { IndiekitError } from "@indiekit/error";
-import { getCanonicalUrl, randomString } from "@indiekit/util";
+import { getCanonicalUrl, getBasePath, randomString } from "@indiekit/util";
 
 import { generateState, validateState } from "./state.js";
 import {
@@ -20,6 +20,7 @@ export const IndieAuth = class {
     this.devMode = options.devMode;
     this.iv = randomBytes(16);
     this.me = getCanonicalUrl(options.me);
+    this.basePath = options.basePath || "";
   }
 
   /**
@@ -85,14 +86,17 @@ export const IndieAuth = class {
       try {
         const { application } = request.app.locals;
         const applicationUrl = getCanonicalUrl(application.url);
-        const { href: clientId } = new URL("id", applicationUrl);
-        const { href: callbackUrl } = new URL("session/auth", applicationUrl);
+        const basePath = getBasePath(applicationUrl);
+        const { href: clientId } = new URL(`${basePath}/id`, applicationUrl);
+        const { href: callbackUrl } = new URL(
+          `${basePath}/session/auth`,
+          applicationUrl,
+        );
 
         const { redirect } = request.query;
         this.redirectUri = redirect
           ? `${callbackUrl}?redirect=${redirect}`
           : callbackUrl;
-
         this.clientId = clientId;
         const state = generateState(this.clientId, this.iv);
         const authUrl = await this.getAuthUrl(
@@ -194,7 +198,7 @@ export const IndieAuth = class {
    * @returns {RequestHandler} Next middleware
    */
   authenticate() {
-    const { devMode, me } = this;
+    const { devMode, me, basePath } = this;
 
     return async function (request, response, next) {
       // `cookie-session` only returns `null` once a session has been cleared
@@ -251,7 +255,7 @@ export const IndieAuth = class {
 
         if (!isApiRequest && request.method === "GET") {
           return response.redirect(
-            `/session/login?redirect=${request.originalUrl}`,
+            `${basePath}/session/login?redirect=${request.originalUrl}`,
           );
         }
 

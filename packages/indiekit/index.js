@@ -1,7 +1,7 @@
 import { createRequire } from "node:module";
 import process from "node:process";
 
-import { getMongodbClient } from "@indiekit/util";
+import { getBasePath, getMongodbClient } from "@indiekit/util";
 import KeyvMongo from "@keyv/mongo";
 import makeDebug from "debug";
 import Keyv from "keyv";
@@ -46,6 +46,7 @@ export const Indiekit = class {
     // `config.application.url`, so the configured value has to be read here to
     // stay distinguishable from one derived from a request.
     this.applicationUrl = config.application?.url;
+    this.basePath = getBasePath(this.applicationUrl);
     this.collections = new Map();
     this.collectionIndexes = new Map();
     this.endpoints = new Set();
